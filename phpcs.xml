@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<ruleset>
+    <description>My PHPCS ruleset</description>
+
+    <!-- PSR-2 -->
+    <rule ref="PSR12">
+
+    </rule>
+
+    <file>config</file>
+    <file>core</file>
+    <file>src</file>
+</ruleset>
