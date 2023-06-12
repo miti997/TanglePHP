@@ -49,7 +49,8 @@ class Component
 
     private function includeTemplate()
     {
-        extract($this->data);
+        extract($this->data['params']);
+        extract(['identifier' => $this->data['identifier']]);
 
         if (filemtime($this->processedTemplatePath) > filemtime($this->templatePath)) {
             return require $this->processedTemplatePath;
@@ -71,8 +72,24 @@ class Component
         $this->on();
 
         $this->contents = str_replace(
-            ['{@', '@}', '{{', '}}'],
-            ['$params[\'', '\']', '<?php echo $params[\'', '\']?>', '<>'],
+            [
+                '{{',
+                '}}',
+                '@:@',//this needs to be here
+                '@each ',
+                '@if ',
+                '@for ',
+                ':@'
+            ],
+            [
+                '<?php echo htmlspecialchars(',
+                ')?>',
+                '<?php }?>',
+                '<?php foreach(',
+                '<?php if(',
+                '<?php for(',
+                '){?>',
+            ],
             $this->contents
         );
 
@@ -84,7 +101,9 @@ class Component
             $this->contents .= '<script>' . $this->js . '</script></div>';
         }
 
-        $this->contents = preg_replace("/[\r\n]+/", '', $this->contents);
+        if (!DEV) {
+            $this->contents = preg_replace("/[\r\n]+/", '', $this->contents);
+        }
     }
 
     private function on()
@@ -113,7 +132,7 @@ class Component
         foreach ($binds[0] as $property) {
             $property = str_replace('@bind:=', '', $property);
             $elementIdentifier = $this->echoIdentifier . '__' . $this->eventCount;
-            $this->contents = preg_replace('/@bind:=\w+/', 'x-identifier="' . $elementIdentifier . '" value="<?php echo $params[\'' . $property . '\']?>"', $this->contents, 1);
+            $this->contents = preg_replace('/@bind:=\w+/', 'x-identifier="' . $elementIdentifier . '" value="<?php echo $' . $property . '?>"', $this->contents, 1);
             $this->eventCount++;
 
             if ($this->rerender) {

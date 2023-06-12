@@ -2,7 +2,7 @@
 
 use core\Handler;
 
-define('DEV', false);
+define('DEV', true);
 define('DS', DIRECTORY_SEPARATOR);
 require_once  '.' . DS . 'core' . DS . 'autoloader.php';
 require_once  '.' . DS . 'core' . DS . 'debug.php';

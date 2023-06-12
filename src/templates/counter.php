@@ -1,3 +1,3 @@
 <button @on:click=decrement>-</button>
-<div>{{counter}}</div>
+<span>{{$counter}}</span>
 <button @on:click=increment>+</button>

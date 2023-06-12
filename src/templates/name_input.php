@@ -1,10 +1,13 @@
-<input type="text" @bind:=name>
+<br>
+<div>
+    <input type="text" @bind:=name>
 
-<?php if ({@name@} !== '') {?>
-    <div>{{name}}</div>
-    <button @on:click=addName>Add</button>
-<?php }?>
+    @if $name !== '':@
+        <div>{{$name}}</div>
+        <button @on:click=addName>Add</button>
+    @:@
 
-<?php foreach ({@names@} as $name) {?>
-    <div><?=$name?></div>
-<?php }?>
+    @each $names as $names:@
+        <div>{{$name}}</div>
+    @:@
+</div>
