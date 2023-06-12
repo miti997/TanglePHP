@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace src\components;
+namespace app\src\components;
 
-use core\Component;
+use app\core\Component;
 
 class NameInput extends Component
 {

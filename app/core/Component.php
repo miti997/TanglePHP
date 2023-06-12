@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace core;
+namespace app\core;
 
 class Component
 {
@@ -19,7 +19,7 @@ class Component
 
     protected function render($componentTemplate)
     {
-        $this->componentName = str_replace('src\\components\\', '', get_class($this));
+        $this->componentName = str_replace('app\\src\\components\\', '', get_class($this));
         $this->componentTemplate = $componentTemplate;
         $this->renderTemplate();
     }
@@ -37,7 +37,7 @@ class Component
     private function renderTemplate()
     {
         $this->processedTemplatePath = BUILT_COMPONENTS . $this->componentTemplate . '.php';
-        $this->templatePath = TEMPLATES . DS . $this->componentTemplate . '.php';
+        $this->templatePath = TEMPLATES . $this->componentTemplate . '.php';
 
         if (file_exists($this->processedTemplatePath) && !DEV) {
             return $this->includeTemplate();
