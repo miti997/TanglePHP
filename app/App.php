@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace app\core;
+namespace app;
 
 use app\core\Handler;
 
@@ -25,8 +25,13 @@ class App
             return $handler->rerender($uri);
         }
 
-        echo '<script src="/app/resources/main.js"></script>';
+        $this->loadScript();
 
-        return $handler->loadComponent($component);
+        return $handler->load($component);
+    }
+
+    private function loadScript()
+    {
+        echo '<script src="/app/resources/main.js"></script>';
     }
 }

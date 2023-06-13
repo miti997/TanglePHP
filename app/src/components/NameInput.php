@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\src\components;
 
-use app\core\Component;
+use app\src\components\Component;
 
 class NameInput extends Component
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace app\core;
+namespace app\src\components;
 
 class Component
 {
@@ -14,7 +14,6 @@ class Component
     private $contents;
     private $js;
     private $echoIdentifier = '<?php echo $identifier?>';
-    private $rerender = false;
     private $eventCount = 0;
 
     protected function render($componentTemplate)
@@ -29,15 +28,10 @@ class Component
         $this->data = $data;
     }
 
-    public function setRerender()
-    {
-        $this->rerender = true;
-    }
-
     private function renderTemplate()
     {
-        $this->processedTemplatePath = BUILT_COMPONENTS . $this->componentTemplate . '.php';
-        $this->templatePath = TEMPLATES . $this->componentTemplate . '.php';
+        $this->processedTemplatePath = BUILT_COMPONENTS . str_replace('/', DS, $this->componentTemplate) . '.php';
+        $this->templatePath = TEMPLATES . str_replace('/', DS, $this->componentTemplate) . '.php';
 
         if (file_exists($this->processedTemplatePath) && !DEV) {
             return $this->includeTemplate();
@@ -63,6 +57,10 @@ class Component
     {
         $this->contents = file_get_contents($this->templatePath);
         $this->parseTemplate();
+        $directory = dirname($this->processedTemplatePath);
+        if (!is_dir($directory)) {
+            mkdir($directory);
+        }
         file_put_contents($this->processedTemplatePath, $this->contents);
     }
 
@@ -70,6 +68,7 @@ class Component
     {
         $this->bind();
         $this->on();
+        $this->load();
 
         $this->contents = str_replace(
             [
@@ -93,17 +92,10 @@ class Component
             $this->contents
         );
 
-        $this->contents = '<div x-identifier="<?php echo $identifier?>" x-structure="<?php echo htmlspecialchars(json_encode($this->data))?>">' . $this->contents;
+        $this->contents = '<div x-identifier="<?php echo $identifier?>" x-structure="<?php echo htmlspecialchars(json_encode($this->data))?>">' . PHP_EOL . $this->contents;
 
-        if ($this->rerender) {
-            $this->contents .= '</div>';
-        } else {
-            $this->contents .= '<script>' . $this->js . '</script></div>';
-        }
 
-        if (!DEV) {
-            $this->contents = preg_replace("/[\r\n]+/", '', $this->contents);
-        }
+        $this->contents .= PHP_EOL . '<script>' . $this->js . '</script></div>';
     }
 
     private function on()
@@ -114,9 +106,6 @@ class Component
             $this->contents = preg_replace('/@on:.*=\w+/', 'x-identifier="' . $elementIdentifier . '"', $this->contents, 1);
             $listener = explode('=', preg_replace('/@on:/', '', $listener));
             $this->eventCount++;
-            if ($this->rerender) {
-                continue;
-            }
 
             $this->js .= str_replace(
                 ['%event%', '%identifier%', '%parent_identifier%', '%component%', '%method%'],
@@ -135,15 +124,20 @@ class Component
             $this->contents = preg_replace('/@bind:=\w+/', 'x-identifier="' . $elementIdentifier . '" value="<?php echo $' . $property . '?>"', $this->contents, 1);
             $this->eventCount++;
 
-            if ($this->rerender) {
-                continue;
-            }
-
             $this->js .= str_replace(
                 ['&identifier&', '%parent_identifier%', '%component%', '%property%'],
                 [$elementIdentifier, $this->echoIdentifier, $this->componentName, $property],
                 'bind(\'&identifier&\',\'%parent_identifier%\',\'%component%\',\'%property%\');'
             );
+        }
+    }
+
+    private function load()
+    {
+        preg_match_all('/@load:\w+/', $this->contents, $loads);
+        foreach ($loads[0] as $load) {
+            $load = str_replace('@load:', '<?php $this->Handler->load(\'', $load) . '\')?>';
+            $this->contents = preg_replace('/@load:\w+/', $load, $this->contents, 1);
         }
     }
 }

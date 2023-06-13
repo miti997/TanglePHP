@@ -1,3 +1,3 @@
-<div><?php $this->Handler->loadComponent('counter');?></div>
+<div>@load:counter</div>
 <br>
-<div><?php $this->Handler->loadComponent('name_input');?></div>
+<div>@load:name_input</div>
