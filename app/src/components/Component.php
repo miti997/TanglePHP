@@ -33,12 +33,8 @@ class Component
         $this->processedTemplatePath = BUILT_COMPONENTS . str_replace('/', DS, $this->componentTemplate) . '.php';
         $this->templatePath = TEMPLATES . str_replace('/', DS, $this->componentTemplate) . '.php';
 
-        if (file_exists($this->processedTemplatePath) && !DEV) {
+
             return $this->includeTemplate();
-        } else {
-            $this->buildTemplate();
-            return $this->includeTemplate();
-        }
     }
 
     private function includeTemplate()
@@ -46,10 +42,11 @@ class Component
         extract($this->data['params']);
         extract(['identifier' => $this->data['identifier']]);
 
-        if (filemtime($this->processedTemplatePath) > filemtime($this->templatePath)) {
+        if (!DEV && file_exists($this->processedTemplatePath) && filemtime($this->processedTemplatePath) > filemtime($this->templatePath)) {
             return require $this->processedTemplatePath;
         } else {
-            return $this->buildTemplate();
+            $this->buildTemplate();
+            return require $this->processedTemplatePath;
         }
     }
 
