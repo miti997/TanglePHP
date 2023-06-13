@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'dev_mode' => false,
+    'dev_mode' => true,
 ];

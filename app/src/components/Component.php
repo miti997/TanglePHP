@@ -131,10 +131,19 @@ class Component
 
     private function load()
     {
-        preg_match_all('/@load:\w+/', $this->contents, $loads);
+        preg_match_all('/@load:[\w\,\ \[\'\=\>\]]+/', $this->contents, $loads);
+
         foreach ($loads[0] as $load) {
-            $load = str_replace('@load:', '<?php $this->Handler->load(\'', $load) . '\')?>';
-            $this->contents = preg_replace('/@load:\w+/', $load, $this->contents, 1);
+            preg_match('/@load:\w+/', $load, $componentName);
+            $componentName = str_replace('@load:', '', $componentName[0]);
+            preg_match('/\[.+\]/', $load, $params);
+            if (empty($params)) {
+                $params = '';
+            } else {
+                $params = ',' . $params[0];
+            }
+
+            $this->contents = preg_replace('/@load:[\w\,\ \[\'\=\>\]]+/', '<?php $this->Handler->load(\'' . $componentName . '\'' . $params . ')?>', $this->contents, 1);
         }
     }
 }
