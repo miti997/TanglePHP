@@ -6,7 +6,7 @@ define('DEV', false);
 define('DS', DIRECTORY_SEPARATOR);
 define('SRC', ROOT . 'app' . DS . 'src' . DS);
 define('CORE', ROOT . 'app' . DS . 'core' . DS);
-define('BUILT_COMPONENTS', ROOT . 'app' . DS . 'components' . DS);
+define('BUILT_COMPONENTS', SRC . 'built_templates' .  DS);
 define('TEMPLATES', SRC . 'templates' . DS);
 define('COMPONENTS', SRC . 'components' . DS);
 
