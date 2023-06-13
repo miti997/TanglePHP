@@ -1,3 +1,3 @@
-/app/src/built_components/*
+app/src/built_components/*
 
-!/app/src/built_components/.gitkeep
+!app/src/built_components/.gitkeep
