@@ -1,5 +1,11 @@
 <?php
 
+/*
+ * Copyright (c) 2023 Gozman-Pop Dumitru
+ *
+ * Licensed under the MIT License.
+ */
+
 use app\App;
 
 define('DS', DIRECTORY_SEPARATOR);

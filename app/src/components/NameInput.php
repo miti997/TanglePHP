@@ -2,6 +2,11 @@
 
 declare(strict_types=1);
 
+/*
+ * Copyright (c) 2023 Gozman-Pop Dumitru
+ *
+ * Licensed under the MIT License.
+ */
 namespace app\src\components;
 
 use app\src\components\Component;
@@ -9,7 +14,7 @@ use app\src\components\Component;
 class NameInput extends Component
 {
     public $name = '';
-    public $names = [];
+    public $names = ['Jhon', 'Andrew', 'Karoline'];
 
     public function mount()
     {
