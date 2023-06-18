@@ -71,25 +71,20 @@ class Component
         $this->bind();
         $this->on();
         $this->load();
+        $this->phpLogic();
 
         $this->contents = str_replace(
             [
                 '{{',
                 '}}',
-                '@:@',//this needs to be here
-                '@each ',
-                '@if ',
-                '@for ',
-                ':@'
+                '@<@',
+                '@>@',
             ],
             [
                 '<?php echo htmlspecialchars(',
                 ')?>',
-                '<?php }?>',
-                '<?php foreach(',
-                '<?php if(',
-                '<?php for(',
-                '){?>',
+                '<?php',
+                '?>'
             ],
             $this->contents
         );
@@ -150,5 +145,27 @@ class Component
 
             $this->contents = preg_replace('/@load:[\w\,\ \[\'\=\>\]]+/', '<?php $this->Handler->load(\'' . $componentName . '\'' . $params . ')?>', $this->contents, 1);
         }
+    }
+
+    private function phpLogic()
+    {
+        preg_match_all('/@each\s.*:|@for\s.*:|@if\s.*:|@elif\s.*:|@else\s:|@end/', $this->contents, $matches);
+
+        foreach ($matches[0] as $match) {
+            $endTag = ') { @>@';
+
+            if (preg_match('/@else\s:/', $match)) {
+                $endTag = ' { @>@';
+            }
+
+            $match = str_replace(
+                ['@each', '@for', '@if', '@elif', '@else', ':', '@end'],
+                ['@<@ foreach (', '@<@ for (', '@<@ if (', '@<@ } elseif (', '@<@ } else ', $endTag, '@<@ } @>@'],
+                $match
+            );
+            $this->contents = preg_replace('/@each\s.*:|@for\s.*:|@if\s.*:|@elif\s.*:|@else\s:|@end/', $match, $this->contents, 1);
+        }
+
+        $this->contents = preg_replace('/@>@(\s*)@<@/', '', $this->contents);
     }
 }
