@@ -92,7 +92,7 @@ class Component
         $this->contents = '<div x-identifier="<?php echo $identifier?>" x-structure="<?php echo htmlspecialchars(json_encode($this->data))?>">' . PHP_EOL . $this->contents;
 
 
-        $this->contents .= PHP_EOL . '<script>' . $this->js . '</script></div>';
+        $this->contents .= PHP_EOL . '<script>' . $this->js . '</script>' . PHP_EOL . '</div>';
     }
 
     private function on()
@@ -159,7 +159,7 @@ class Component
             }
 
             $match = str_replace(
-                ['@each', '@for', '@if', '@elif', '@else', ':', '@end'],
+                ['@each ', '@for ', '@if ', '@elif ', '@else ', ' :', '@end'],
                 ['@<@ foreach (', '@<@ for (', '@<@ if (', '@<@ } elseif (', '@<@ } else ', $endTag, '@<@ } @>@'],
                 $match
             );
