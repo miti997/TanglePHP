@@ -1,3 +1,5 @@
+@<@ $test = 'name_input'; @>@
+
 <div>@load:counter</div>
 <br>
-<div>@load:name_input</div>
+<div>@load:$test</div>

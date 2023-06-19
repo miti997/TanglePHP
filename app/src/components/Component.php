@@ -75,12 +75,14 @@ class Component
 
         $this->contents = str_replace(
             [
+                '{{!',
                 '{{',
                 '}}',
                 '@<@',
                 '@>@',
             ],
             [
+                '<?php echo ',
                 '<?php echo htmlspecialchars(',
                 ')?>',
                 '<?php',
@@ -131,10 +133,10 @@ class Component
 
     private function load()
     {
-        preg_match_all('/@load:[\w\,\ \[\'\=\>\]]+/', $this->contents, $loads);
+        preg_match_all('/@load:[\$\w\,\ \[\'\=\>\]]+/', $this->contents, $loads);
 
         foreach ($loads[0] as $load) {
-            preg_match('/@load:\w+/', $load, $componentName);
+            preg_match('/@load:[\$\w]+/', $load, $componentName);
             $componentName = str_replace('@load:', '', $componentName[0]);
             preg_match('/\[.+\]/', $load, $params);
             if (empty($params)) {
@@ -143,7 +145,7 @@ class Component
                 $params = ',' . $params[0];
             }
 
-            $this->contents = preg_replace('/@load:[\w\,\ \[\'\=\>\]]+/', '<?php $this->Handler->load(\'' . $componentName . '\'' . $params . ')?>', $this->contents, 1);
+            $this->contents = preg_replace('/@load:[\$\w\,\ \[\'\=\>\]]+/', '<?php $this->Handler->load("' . $componentName . '"' . $params . ')?>', $this->contents, 1);
         }
     }
 
