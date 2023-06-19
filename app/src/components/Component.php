@@ -76,25 +76,23 @@ class Component
         $this->bind();
         $this->on();
         $this->load();
-        $this->phpLogic();
 
         $this->contents = str_replace(
             [
                 '{{!',
                 '{{',
                 '}}',
-                '@<@',
-                '@>@',
             ],
             [
-                '<?php echo ',
-                '<?php echo htmlspecialchars(',
-                ')?>',
-                '<?php',
-                '?>'
+                '@<@ echo (',
+                '@<@ echo htmlspecialchars(',
+                '); @>@',
             ],
             $this->contents
         );
+
+        $this->phpLogic();
+
 
         $this->contents = '<div x-identifier="<?php echo $identifier?>" x-structure="<?php echo htmlspecialchars(json_encode($this->data))?>">' . PHP_EOL . $this->contents;
 
@@ -174,5 +172,7 @@ class Component
         }
 
         $this->contents = preg_replace('/@>@(\s*)@<@/', '', $this->contents);
+
+        $this->contents = str_replace(['@<@', '@>@'], ['<?php','?>'], $this->contents);
     }
 }
