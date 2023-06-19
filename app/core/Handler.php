@@ -49,6 +49,7 @@ class Handler
             $component->{$data['method']}();
         }
 
+        $component->beforeMount();
         $data['params'] = get_object_vars($component);
         $component->setData($data);
 

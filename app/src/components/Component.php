@@ -21,6 +21,11 @@ class Component
     private $echoIdentifier = '<?php echo $identifier?>';
     private $eventCount = 0;
 
+    public function beforeMount()
+    {
+
+    }
+
     protected function render($componentTemplate)
     {
         $this->componentName = str_replace('app\\src\\components\\', '', get_class($this));
